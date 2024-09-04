@@ -9,7 +9,7 @@ use crate::{
 pub fn mask_setup(mut commands: Commands) {
     let mask_small = 200.;
     let mask_large = 600.;
-    let mask_tr_z = -1.;
+    let mask_tr_z = 100.;
     let mask_tr_x = (ORIGINAL_WIDTH / 2.) + (mask_small / 2.);
     let mask_tr_y = (ORIGINAL_HEIGHT / 2.) + (mask_small / 2.);
     let mask_center_z = -1.;

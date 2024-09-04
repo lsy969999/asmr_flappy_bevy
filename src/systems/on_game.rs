@@ -16,6 +16,7 @@ use avian2d::prelude::*;
 use bevy::{math::vec3, prelude::*};
 use bevy_mod_picking::prelude::*;
 use bevy_tweening::{Animator, AnimatorState};
+use rand::Rng;
 
 pub fn on_enter_game(
     mut commands: Commands,
@@ -72,7 +73,7 @@ pub fn on_enter_game(
         Bird,
         SpriteBundle {
             texture: assets.gen_bird_atlas_texture.clone(),
-            transform: Transform::from_xyz(-30., 30., 1.),
+            transform: Transform::from_xyz(-30., 30., 3.),
             ..default()
         },
         TextureAtlas {
@@ -129,16 +130,17 @@ pub fn on_enter_game(
         On::<Pointer<Click>>::send_event::<PauseBtnClickEvent>(),
     );
 
+    let ry = rand::thread_rng().gen_range(-20.0..60.0);
     let pipe_parent = (
         Name::new("pipe parent"),
         PipeParent,
-        SpatialBundle::from_transform(Transform::from_xyz(85., 0., 2.)),
+        SpatialBundle::from_transform(Transform::from_xyz(85., ry, 2.)),
     );
-
+    let ry = rand::thread_rng().gen_range(-20.0..60.0);
     let pipe_parent2 = (
         Name::new("pipe parent2"),
         PipeParent,
-        SpatialBundle::from_transform(Transform::from_xyz(170., 0., 2.)),
+        SpatialBundle::from_transform(Transform::from_xyz(170., ry, 2.)),
     );
 
     let pipe_top = (

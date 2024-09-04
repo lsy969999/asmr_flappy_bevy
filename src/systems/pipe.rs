@@ -1,5 +1,6 @@
 use avian2d::prelude::{Collider, RigidBody, Sensor};
 use bevy::prelude::*;
+use rand::Rng;
 
 use crate::components::game::{PipeParent, PipePoint};
 
@@ -12,6 +13,8 @@ pub fn pipe_movement(
         tr.translation.x -= time.delta_seconds() * 50.;
         if tr.translation.x <= -85. {
             tr.translation.x = 85.;
+            let ry = rand::thread_rng().gen_range(-20.0..60.0);
+            tr.translation.y = ry;
             let pipe_point = (
                 Name::new("pipe point"),
                 PipePoint,
