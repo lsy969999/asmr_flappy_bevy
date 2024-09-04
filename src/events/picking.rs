@@ -27,3 +27,12 @@ impl From<ListenerInput<Pointer<Down>>> for BirdJumpEvent {
         Self(event.target, event.hit.depth)
     }
 }
+
+#[derive(Event)]
+pub struct ResultOkBtnClickEvent(pub Entity, pub f32);
+
+impl From<ListenerInput<Pointer<Click>>> for ResultOkBtnClickEvent {
+    fn from(event: ListenerInput<Pointer<Click>>) -> Self {
+        Self(event.target, event.hit.depth)
+    }
+}
