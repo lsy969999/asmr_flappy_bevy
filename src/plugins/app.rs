@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_mod_picking::DefaultPickingPlugins;
 
 use crate::states::my_states::{Loading, MyStates};
 
@@ -9,6 +10,8 @@ pub struct AppPlugin;
 impl Plugin for AppPlugin {
     fn build(&self, app: &mut App) {
         app.insert_state(MyStates::Load(Loading::Loading));
+
+        app.add_plugins(DefaultPickingPlugins);
 
         app.add_plugins(AssetsPlugin)
             .add_plugins(MenuPlugin)

@@ -6,6 +6,8 @@ pub struct FlappyAssets {
     //sprite
     #[asset(path = "sprites/background_day.png")]
     pub background_day: Handle<Image>,
+    #[asset(path = "sprites/ground.png")]
+    pub ground: Handle<Image>,
     #[asset(path = "sprites/bird_orange_0.png")]
     pub bird_orange_0: Handle<Image>,
     #[asset(path = "sprites/bird_orange_1.png")]
@@ -16,6 +18,8 @@ pub struct FlappyAssets {
     pub button_ok: Handle<Image>,
     #[asset(path = "sprites/button_pause.png")]
     pub button_pause: Handle<Image>,
+    #[asset(path = "sprites/button_play_normal.png")]
+    pub button_play_normal: Handle<Image>,
     #[asset(path = "sprites/button_play_pressed.png")]
     pub button_play_pressed: Handle<Image>,
     #[asset(path = "sprites/button_resume.png")]
