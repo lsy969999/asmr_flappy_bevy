@@ -1,12 +1,15 @@
+use std::{f32::consts::PI, time::Duration};
+
 use avian2d::prelude::*;
 use bevy::{math::vec2, prelude::*};
+use bevy_tweening::{lens::TransformRotationLens, Animator, Delay, EaseFunction, Tween};
 
 use crate::{
     components::{
-        game::{Bird, GuideParent},
+        game::{Bird, GroundCollider, GuideParent, Pipe, PipePoint},
         timer::BirdAniTimer,
     },
-    events::picking::BirdJumpEvent,
+    events::{game::ScoreUpEvent, picking::BirdJumpEvent},
     resources::resize::ResizeScale,
     states::my_states::{Gaming, MyStates},
 };
@@ -59,6 +62,50 @@ pub fn bird_jump(
                 .insert(impulse)
                 .insert(LinearVelocity::default())
                 .insert(AngularVelocity::default());
+
+            //bird tween
+            let tween1 = Tween::new(
+                EaseFunction::QuadraticInOut,
+                Duration::from_millis(200),
+                TransformRotationLens {
+                    start: Quat::from_euler(EulerRot::XYZ, 0., 0., 0.),
+                    end: Quat::from_euler(EulerRot::XYZ, 0., 0., PI / 4.),
+                },
+            );
+            let delay = Delay::new(Duration::from_millis(100));
+            let tween2 = Tween::new(
+                EaseFunction::QuadraticInOut,
+                Duration::from_millis(300),
+                TransformRotationLens {
+                    start: Quat::from_euler(EulerRot::XYZ, 0., 0., PI / 4.),
+                    end: Quat::from_euler(EulerRot::XYZ, 0., 0., -PI / 2.),
+                },
+            );
+            let seq = tween1.then(delay).then(tween2);
+            commands.entity(entity).insert(Animator::new(seq));
+        }
+    }
+}
+
+pub fn bird_collide_check(
+    mut commands: Commands,
+    q_collider: Query<(Entity, &CollidingEntities), With<Bird>>,
+    q_pipe: Query<&Pipe>,
+    q_ground: Query<&GroundCollider>,
+    q_pipe_point: Query<(Entity, &PipePoint)>,
+    mut ew_score_up: EventWriter<ScoreUpEvent>,
+    mut next_state: ResMut<NextState<MyStates>>,
+) {
+    if let Ok((_entity, colliding_entities)) = q_collider.get_single() {
+        for &entity in colliding_entities.iter() {
+            if q_pipe.get(entity).is_ok() || q_ground.get(entity).is_ok() {
+                next_state.set(MyStates::Game(Gaming::Result));
+            }
+
+            if let Ok((entity, _)) = q_pipe_point.get(entity) {
+                commands.entity(entity).despawn_recursive();
+                ew_score_up.send(ScoreUpEvent);
+            }
         }
     }
 }

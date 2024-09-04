@@ -4,4 +4,6 @@ pub mod ground;
 pub mod mask;
 pub mod on_game;
 pub mod on_menu;
+pub mod pipe;
 pub mod resize;
+pub mod score;

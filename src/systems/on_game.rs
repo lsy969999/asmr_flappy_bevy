@@ -1,6 +1,9 @@
 use crate::{
     components::{
-        game::{Bg, Bird, Ground, GuideParent, PauseBtn},
+        game::{
+            Bg, Bird, Ground, GroundCollider, GuideParent, PauseBtn, Pipe, PipeParent, PipePoint,
+            ScoreParent,
+        },
         on::OnGame,
         resize::Resizable,
         timer::BirdAniTimer,
@@ -12,6 +15,7 @@ use crate::{
 use avian2d::prelude::*;
 use bevy::{math::vec3, prelude::*};
 use bevy_mod_picking::prelude::*;
+use bevy_tweening::{Animator, AnimatorState};
 
 pub fn on_enter_game(
     mut commands: Commands,
@@ -44,6 +48,7 @@ pub fn on_enter_game(
 
     let ground_collider = (
         Name::new("ground collider"),
+        GroundCollider,
         RigidBody::Static,
         Collider::rectangle(168., 56.),
         TransformBundle::from_transform(Transform::from_xyz(0., -100., 1.)),
@@ -102,7 +107,8 @@ pub fn on_enter_game(
 
     let score_parent = (
         Name::new("score parent"),
-        SpatialBundle::from_transform(Transform::from_xyz(0., 110., 1.)),
+        ScoreParent,
+        SpatialBundle::from_transform(Transform::from_xyz(0., 110., 10.)),
     );
     let large_num_0 = (
         Name::new("num"),
@@ -123,6 +129,53 @@ pub fn on_enter_game(
         On::<Pointer<Click>>::send_event::<PauseBtnClickEvent>(),
     );
 
+    let pipe_parent = (
+        Name::new("pipe parent"),
+        PipeParent,
+        SpatialBundle::from_transform(Transform::from_xyz(85., 0., 2.)),
+    );
+
+    let pipe_parent2 = (
+        Name::new("pipe parent2"),
+        PipeParent,
+        SpatialBundle::from_transform(Transform::from_xyz(170., 0., 2.)),
+    );
+
+    let pipe_top = (
+        Name::new("pipe top"),
+        Pipe,
+        Sensor,
+        RigidBody::Static,
+        Collider::rectangle(26., 160.),
+        SpriteBundle {
+            texture: assets.pipe_green_top.clone(),
+            transform: Transform::from_xyz(0., 115., 0.),
+            ..default()
+        },
+    );
+
+    let pipe_point = (
+        Name::new("pipe point"),
+        PipePoint,
+        Sensor,
+        Collider::rectangle(5., 60.),
+        RigidBody::Static,
+        TransformBundle::from_transform(Transform::from_xyz(0., 0., 0.)),
+    );
+
+    let pipe_bottom = (
+        Name::new("pipe bottom"),
+        Pipe,
+        Sensor,
+        RigidBody::Static,
+        Collider::rectangle(26., 160.),
+        SpriteBundle {
+            texture: assets.pipe_green_bottom.clone(),
+            transform: Transform::from_xyz(0., -115., 0.),
+            ..default()
+        },
+    );
+
     commands.spawn(bg).with_children(|parent| {
         parent.spawn(pause_btn);
         parent.spawn(score_parent).with_children(|parent| {
@@ -133,12 +186,24 @@ pub fn on_enter_game(
             parent.spawn(get_ready);
             parent.spawn(guide);
         });
+
+        parent.spawn(pipe_parent).with_children(|parent| {
+            parent.spawn(pipe_top.clone());
+            parent.spawn(pipe_bottom.clone());
+            parent.spawn(pipe_point.clone());
+        });
+        parent.spawn(pipe_parent2).with_children(|parent| {
+            parent.spawn(pipe_top);
+            parent.spawn(pipe_bottom);
+            parent.spawn(pipe_point);
+        });
+
         parent.spawn(ground);
         parent.spawn(ground_collider);
         parent.spawn(sky_collider);
     });
 
-    next_state.set(MyStates::Game(Gaming::Game));
+    next_state.set(MyStates::Game(Gaming::Guide));
 }
 
 pub fn pause_btn_click(
@@ -148,6 +213,8 @@ pub fn pause_btn_click(
     mut q_pause: Query<(Entity, &mut PauseBtn), With<PauseBtn>>,
     mut next_state: ResMut<NextState<MyStates>>,
     q_guide: Query<&GuideParent>,
+    mut time: ResMut<Time<Physics>>,
+    mut animator: Query<&mut Animator<Transform>, With<Bird>>,
 ) {
     for _ in er_pause_click.read() {
         // info!("pause btn clicked!");
@@ -162,10 +229,24 @@ pub fn pause_btn_click(
                     // return to game
                     next_state.set(MyStates::Game(Gaming::Game));
                 }
+
+                //avian
+                time.unpause();
+
+                //tween
+                let mut a = animator.get_single_mut().unwrap();
+                a.state = AnimatorState::Playing;
             } else {
                 pause.is_paused = true;
                 commands.entity(entity).insert(assets.button_resume.clone());
                 next_state.set(MyStates::Game(Gaming::Pause));
+
+                //avian
+                time.pause();
+
+                //tween
+                let mut a = animator.get_single_mut().unwrap();
+                a.state = AnimatorState::Paused;
             }
         }
     }
