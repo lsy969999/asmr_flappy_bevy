@@ -4,3 +4,4 @@ mod assets;
 mod inspector;
 mod mask;
 mod menu;
+mod resize;

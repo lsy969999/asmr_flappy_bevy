@@ -1,7 +1,7 @@
 use bevy::{color::palettes::css, math::vec2, prelude::*};
 
 use crate::{
-    components::mask::MaskCenter,
+    components::{mask::MaskCenter, resize::Resizable},
     constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH},
 };
 
@@ -14,6 +14,7 @@ pub fn mask_setup(mut commands: Commands) {
     let mask_center_z = -1.;
     let mask_parent = (
         Name::new("mask parent"),
+        Resizable,
         SpatialBundle::from_transform(Transform::from_xyz(0., 0., 0.)),
     );
     let left = (
@@ -67,6 +68,7 @@ pub fn mask_setup(mut commands: Commands) {
 
     let mask_center = (
         Name::new("mask center"),
+        Resizable,
         MaskCenter,
         SpriteBundle {
             sprite: Sprite {
