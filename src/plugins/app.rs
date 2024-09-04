@@ -1,8 +1,8 @@
+use crate::states::my_states::{Loading, MyStates};
+use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy_mod_picking::DefaultPickingPlugins;
 use bevy_tweening::TweeningPlugin;
-
-use crate::states::my_states::{Loading, MyStates};
 
 use super::{
     assets::AssetsPlugin, game::GamePlugin, mask::MaskPlugin, menu::MenuPlugin,
@@ -16,7 +16,8 @@ impl Plugin for AppPlugin {
         app.insert_state(MyStates::Load(Loading::Loading));
 
         app.add_plugins(DefaultPickingPlugins)
-            .add_plugins(TweeningPlugin);
+            .add_plugins(TweeningPlugin)
+            .add_plugins(PhysicsPlugins::default());
 
         app.add_plugins(AssetsPlugin)
             .add_plugins(MenuPlugin)
@@ -27,7 +28,8 @@ impl Plugin for AppPlugin {
         #[cfg(feature = "inspector")]
         {
             use super::inspector::InspectorPlugin;
-            app.add_plugins(InspectorPlugin);
+            app.add_plugins(InspectorPlugin)
+                .add_plugins(PhysicsDebugPlugin::default());
         }
 
         app.add_systems(Startup, |mut commands: Commands| {

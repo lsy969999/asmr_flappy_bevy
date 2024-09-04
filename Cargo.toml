@@ -8,6 +8,7 @@ default = ["inspector"]
 inspector = ["bevy-inspector-egui", "iyes_perf_ui"]
 
 [dependencies]
+avian2d = "0.1.2"
 bevy = "0.14.1"
 bevy-inspector-egui = { version = "0.25.2", optional = true }
 bevy_asset_loader = "0.21.0"

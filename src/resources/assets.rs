@@ -18,6 +18,8 @@ pub struct FlappyAssets {
     pub button_ok: Handle<Image>,
     #[asset(path = "sprites/button_pause.png")]
     pub button_pause: Handle<Image>,
+    #[asset(path = "sprites/label_get_ready.png")]
+    pub label_get_ready: Handle<Image>,
     #[asset(path = "sprites/button_play_normal.png")]
     pub button_play_normal: Handle<Image>,
     #[asset(path = "sprites/button_play_pressed.png")]
@@ -97,4 +99,38 @@ pub struct FlappyAssets {
     pub gen_bird_atlas_layout: Handle<TextureAtlasLayout>,
     pub gen_sparkle_atlas_texture: Handle<Image>,
     pub gen_sparkle_atlas_layout: Handle<TextureAtlasLayout>,
+}
+
+impl FlappyAssets {
+    pub fn get_large_num(&self, str: &str) -> Handle<Image> {
+        match str {
+            "0" => self.number_large_0.clone(),
+            "1" => self.number_large_1.clone(),
+            "2" => self.number_large_2.clone(),
+            "3" => self.number_large_3.clone(),
+            "4" => self.number_large_4.clone(),
+            "5" => self.number_large_5.clone(),
+            "6" => self.number_large_6.clone(),
+            "7" => self.number_large_7.clone(),
+            "8" => self.number_large_8.clone(),
+            "9" => self.number_large_9.clone(),
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn get_middle_num(&self, str: &str) -> Handle<Image> {
+        match str {
+            "0" => self.number_middle_0.clone(),
+            "1" => self.number_middle_1.clone(),
+            "2" => self.number_middle_2.clone(),
+            "3" => self.number_middle_3.clone(),
+            "4" => self.number_middle_4.clone(),
+            "5" => self.number_middle_5.clone(),
+            "6" => self.number_middle_6.clone(),
+            "7" => self.number_middle_7.clone(),
+            "8" => self.number_middle_8.clone(),
+            "9" => self.number_middle_9.clone(),
+            _ => unreachable!(),
+        }
+    }
 }
