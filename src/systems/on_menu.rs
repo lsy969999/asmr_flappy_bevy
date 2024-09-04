@@ -1,13 +1,18 @@
-use bevy::{math::vec3, prelude::*};
+use std::time::Duration;
+
+use bevy::{color::palettes::css, math::vec3, prelude::*};
 use bevy_mod_picking::prelude::*;
+use bevy_tweening::{lens::SpriteColorLens, Animator, EaseFunction, Tween, TweenCompleted};
 
 use crate::{
     components::{
         game::{Bg, Bird, Ground, TitleParent},
+        mask::MaskCenter,
         on::OnMenu,
         resize::Resizable,
         timer::BirdAniTimer,
     },
+    constant::{TWEEN_CALLBACK_MASK_CENTER_BACK, TWEEN_CALLBACK_MENU_TO_GAME},
     events::picking::PlayBtnClickEvent,
     resources::{assets::FlappyAssets, resize::ResizeScale},
     states::my_states::{Gaming, MyStates},
@@ -110,12 +115,46 @@ pub fn title_movement(mut q_title: Query<&mut Transform, With<TitleParent>>, tim
 }
 
 pub fn play_btn_click(
+    mut commands: Commands,
     mut er_play_click: EventReader<PlayBtnClickEvent>,
-    mut next_state: ResMut<NextState<MyStates>>,
+    mut q_mc: Query<(Entity, &mut Transform), With<MaskCenter>>,
 ) {
     for _ in er_play_click.read() {
         // info!("paly btn click!!");
-        next_state.set(MyStates::Game(Gaming::Init));
+        if let Ok((entity, mut tr)) = q_mc.get_single_mut() {
+            tr.translation.z = 100.;
+            let tween1 = Tween::new(
+                EaseFunction::QuadraticInOut,
+                Duration::from_millis(200),
+                SpriteColorLens {
+                    start: Color::srgba_u8(0, 0, 0, 0),
+                    end: css::BLACK.into(),
+                },
+            )
+            .with_completed_event(TWEEN_CALLBACK_MENU_TO_GAME);
+            let tween2 = Tween::new(
+                EaseFunction::QuadraticInOut,
+                Duration::from_millis(200),
+                SpriteColorLens {
+                    start: css::BLACK.into(),
+                    end: Color::srgba_u8(0, 0, 0, 0),
+                },
+            )
+            .with_completed_event(TWEEN_CALLBACK_MASK_CENTER_BACK);
+            let seq = tween1.then(tween2);
+            commands.entity(entity).insert(Animator::new(seq));
+        }
+    }
+}
+
+pub fn tween_callback_menu_to_game(
+    mut er_tween: EventReader<TweenCompleted>,
+    mut next_state: ResMut<NextState<MyStates>>,
+) {
+    for event in er_tween.read() {
+        if event.user_data == TWEEN_CALLBACK_MENU_TO_GAME {
+            next_state.set(MyStates::Game(Gaming::Init));
+        }
     }
 }
 

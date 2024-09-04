@@ -1,8 +1,9 @@
 use bevy::{color::palettes::css, math::vec2, prelude::*};
+use bevy_tweening::TweenCompleted;
 
 use crate::{
     components::{mask::MaskCenter, resize::Resizable},
-    constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH},
+    constant::{ORIGINAL_HEIGHT, ORIGINAL_WIDTH, TWEEN_CALLBACK_MASK_CENTER_BACK},
 };
 
 pub fn mask_setup(mut commands: Commands) {
@@ -72,7 +73,7 @@ pub fn mask_setup(mut commands: Commands) {
         MaskCenter,
         SpriteBundle {
             sprite: Sprite {
-                color: css::DIM_GRAY.into(),
+                color: Color::srgba_u8(0, 0, 0, 0),
                 custom_size: Some(vec2(ORIGINAL_WIDTH, ORIGINAL_HEIGHT)),
                 ..default()
             },
@@ -87,4 +88,17 @@ pub fn mask_setup(mut commands: Commands) {
         parent.spawn(down);
     });
     commands.spawn(mask_center);
+}
+
+pub fn tween_callback_mask_center_back(
+    mut er_tween: EventReader<TweenCompleted>,
+    mut q_mc: Query<&mut Transform, With<MaskCenter>>,
+) {
+    for event in er_tween.read() {
+        if event.user_data == TWEEN_CALLBACK_MASK_CENTER_BACK {
+            if let Ok(mut tr) = q_mc.get_single_mut() {
+                tr.translation.z = -1.;
+            }
+        }
+    }
 }

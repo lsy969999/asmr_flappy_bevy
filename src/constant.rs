@@ -1,3 +1,6 @@
 //144 × 256
 pub const ORIGINAL_WIDTH: f32 = 144.;
 pub const ORIGINAL_HEIGHT: f32 = 256.;
+
+pub const TWEEN_CALLBACK_MASK_CENTER_BACK: u64 = 1;
+pub const TWEEN_CALLBACK_MENU_TO_GAME: u64 = 2;
