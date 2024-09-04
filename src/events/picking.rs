@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy_mod_picking::prelude::*;
 
 #[derive(Event)]
+#[allow(unused)]
 pub struct PlayBtnClickEvent(pub Entity, pub f32);
 
 impl From<ListenerInput<Pointer<Click>>> for PlayBtnClickEvent {
@@ -11,6 +12,7 @@ impl From<ListenerInput<Pointer<Click>>> for PlayBtnClickEvent {
 }
 
 #[derive(Event)]
+#[allow(unused)]
 pub struct PauseBtnClickEvent(pub Entity, pub f32);
 
 impl From<ListenerInput<Pointer<Click>>> for PauseBtnClickEvent {
@@ -20,6 +22,7 @@ impl From<ListenerInput<Pointer<Click>>> for PauseBtnClickEvent {
 }
 
 #[derive(Event)]
+#[allow(unused)]
 pub struct BirdJumpEvent(pub Entity, pub f32);
 
 impl From<ListenerInput<Pointer<Down>>> for BirdJumpEvent {
@@ -29,6 +32,7 @@ impl From<ListenerInput<Pointer<Down>>> for BirdJumpEvent {
 }
 
 #[derive(Event)]
+#[allow(unused)]
 pub struct ResultOkBtnClickEvent(pub Entity, pub f32);
 
 impl From<ListenerInput<Pointer<Click>>> for ResultOkBtnClickEvent {

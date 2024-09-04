@@ -38,9 +38,9 @@ pub fn bird_jump(
     resize_scale: Res<ResizeScale>,
 ) {
     for event in er_bird_jump.read() {
-        info!("bird jump! depth: {}", event.1);
+        // info!("bird jump! depth: {}", event.1);
         if event.1 == 990. {
-            info!("pause btn click! jump skip");
+            // info!("pause btn click! jump skip");
             return;
         }
 
