@@ -34,3 +34,15 @@ pub struct GroundCollider;
 
 #[derive(Component)]
 pub struct ScoreParent;
+
+#[derive(Component, Debug)]
+pub struct PanelParent {
+    pub score: u32,
+    pub best: u32,
+}
+
+#[derive(Component)]
+pub struct PanelScore;
+
+#[derive(Component)]
+pub struct PanelBest;

@@ -12,8 +12,9 @@ use crate::{
         ground::ground_movement,
         on_game::{on_enter_game, pause_btn_click},
         on_result::{
-            on_enter_result, on_exit_result, result_ok_btn_click, tween_callback_death_white,
-            tween_callback_game_to_menu,
+            on_enter_result, on_exit_result, panel_score_counting_ani, result_ok_btn_click,
+            sparkle_ani, tween_callback_death_white, tween_callback_game_to_menu,
+            tween_callback_panel_up,
         },
         pipe::pipe_movement,
         score::score_up,
@@ -59,6 +60,9 @@ impl Plugin for GamePlugin {
                     tween_callback_death_white,
                     result_ok_btn_click,
                     tween_callback_game_to_menu,
+                    sparkle_ani,
+                    panel_score_counting_ani,
+                    tween_callback_panel_up,
                 )
                     .run_if(in_state(MyStates::Game(Gaming::Result))),
             );
