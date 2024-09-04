@@ -19,6 +19,7 @@ use crate::{
         TWEEN_CALLBACK_PANEL_UP,
     },
     events::picking::ResultOkBtnClickEvent,
+    ffi::{get_score, set_score, Score},
     resources::{assets::FlappyAssets, game::GameConfig},
     states::my_states::MyStates,
 };
@@ -65,8 +66,13 @@ pub fn tween_callback_death_white(
 ) {
     for event in er_tween.read() {
         if event.user_data == TWEEN_CALLBACK_DEATH_WHITE {
+            let saved_score = get_score();
             let now_score = config.score;
-            let best_score = 2;
+            let best_score = saved_score.score;
+
+            if now_score > best_score {
+                set_score(Score { score: now_score });
+            }
 
             let game_over_tween1 = Tween::new(
                 EaseFunction::QuadraticInOut,
